@@ -13,6 +13,7 @@
 using namespace std;
 using namespace gloox;
 
+// BOOOOOOBIES is something the bot should never speak
 Channel::Channel (BotCore & bot) : lastSpoken ("BOOOOOOOOOOOOOOBIES!"), bot (bot)
 {
 
@@ -26,6 +27,7 @@ Channel::~Channel ()
 void Channel::handleMUCParticipantPresence (MUCRoom* room, const MUCRoomParticipant participant, const Presence& presence)
 {
 	// TODO: Stub
+    // This should query the plugins to see if they care to handle the event
 	cout << "[" << room->name () << "] " << participant.nick->resource () << " ";
 	Presence::PresenceType p = presence.subtype ();
 	switch (p) {
@@ -70,22 +72,27 @@ void Channel::handleMUCMessage (MUCRoom* room, const Message& msg, bool priv)
 	}
 	else {
 		// Otherwise,
-		// Log
+		// Log it
 		cout << "[" << room->name () << ": " << msg.from ().resource () << "(" << priv << ") ]  " << msg.body () << endl;
 		// and react.
 		bot.processMessage (room, msg, priv);
+        // TODO: Actually react
 		speak (room, "Tell me more about " + msg.body () + ", " + msg.from ().resource ());
 	}
 }
 
 bool Channel::handleMUCRoomCreation (MUCRoom* room)
 {
-	// TODO: Stub
+	// TODO: Stub. What does scenario does this handle and would plugins care?
 	return true;
 }
 
 void Channel::handleMUCSubject (MUCRoom* room, const std::string &nick, const std::string &subject)
 {
+    // TODO: This happens when the topic is set by someone. The first instance
+    // of this upon joining a room should be ignored as it is just an
+    // announcement of the topic. But if it changes then it should be given to
+    // the plugins
 	cout << room->name () << " Subject is \"" << subject << "\"";
 	if (nick.empty ()) {
 		cout << endl;

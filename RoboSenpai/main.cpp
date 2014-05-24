@@ -12,31 +12,15 @@ using namespace std;
 using namespace gloox;
 
 
-typedef struct
-{
-	int butts;
-	int buuts2;
-	int buuts3;
-} mybutts;
-
-mybutts buttfunc ()
-{
-	mybutts butts;
-	butts.butts = 0;
-	butts.buuts2 = 1;
-	butts.buuts3 = 2;
-	return butts;
-}
-
 int main (int argc, char * argv [])
 {
-	buttfunc ();
-
-
+    // TODO: Read in the chat info from a configuration file
 	BotCore bot ("97498_713477@chat.hipchat.com", "ThunderBurdsAreG0");
 	cout << "Returned..." << endl;
 	for (;;) {
-
+        // This infinite loop is for debugging purposes on Windows: if you run
+        // the application and it terminates, you can't see any last-minute
+        // print statements before the window closes
 	}
 	return 1;
 }

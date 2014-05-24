@@ -94,7 +94,7 @@ bool BotCore::onTLSConnect (const gloox::CertInfo &info)
 
 void BotCore::processMessage (MUCRoom* room, const Message& msg, bool priv)
 {
-
+    // TODO: What is this?
 }
 
 void BotCore::joinRoom (const std::string& room, const std::string& service, const std::string& nick)
