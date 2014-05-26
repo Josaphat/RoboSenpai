@@ -10,5 +10,5 @@ set(LIBS ${LIBS} ${GLOOX_LIBRARIES})
 
 set(CMAKE_CXX_FLAGS "-Wall -std=c++11")
 
-add_subdirectory(RoboSenpai)
+add_subdirectory(src)
 
