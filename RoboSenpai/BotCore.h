@@ -1,4 +1,5 @@
-#pragma once
+#ifndef BOTCORE_H
+#define BOTCORE_H
 
 #include <vector>
 
@@ -27,11 +28,13 @@ public:
 	virtual void onDisconnect (gloox::ConnectionError e);
 	virtual bool onTLSConnect (const gloox::CertInfo & info);
 
-	void processMessage (gloox::MUCRoom* room, const gloox::Message& msg, bool priv);
+	void processMessage (gloox::MUCRoom * room, const gloox::Message & msg, bool priv);
 private:
-	void joinRoom (const std::string& room, const std::string& service, const std::string& nick);
+	void joinRoom (const std::string & room, const std::string & service, const std::string & nick);
 
 	gloox::Client * client;
 	std::vector<gloox::MUCRoom *> rooms;
 	SystemCommandsProcessor sysCmd;
 };
+
+#endif /* BOTCORE_H */

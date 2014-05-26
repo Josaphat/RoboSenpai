@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 
+#include <gloox/client.h>
 #include <gloox/message.h>
 #include <gloox/mucroom.h>
 

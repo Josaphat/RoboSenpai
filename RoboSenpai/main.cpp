@@ -1,15 +1,9 @@
 #include <iostream>
 #include <string>
 
-#include <gloox/client.h>
-#include <gloox/message.h>
-#include <gloox/messagehandler.h>
-#include <gloox/connectionlistener.h>
-
 #include "BotCore.h"
 
 using namespace std;
-using namespace gloox;
 
 
 int main (int argc, char * argv [])
