@@ -11,12 +11,12 @@
 
 #include "SystemCommandsProcessor.h"
 
-
 /**
- * BotCore comprises the main connectivity aspects of RoboSenpai.
- * This class spawns the "Channel" instances that handle communication within
- * a particular chat room.
+ * BotCore handles the primary connectivity of the application.
+ * This class handles connecting to the chat server and maintaining the connection.
+ * It also acts as a router for messages to the various modules.
  */
+
 class BotCore : public gloox::MessageSessionHandler, gloox::MessageHandler, gloox::ConnectionListener
 {
 public:

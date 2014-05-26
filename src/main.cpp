@@ -12,9 +12,9 @@ int main (int argc, char * argv [])
 	BotCore bot ("97498_713477@chat.hipchat.com", "ThunderBurdsAreG0");
 	cout << "Returned..." << endl;
 	for (;;) {
-        // This infinite loop is for debugging purposes on Windows: if you run
-        // the application and it terminates, you can't see any last-minute
-        // print statements before the window closes
+        // This infinite loop is for debugging purposes to make sure that
+        // the host application (console windows) don't terminate before
+        // the output of the application can be displayed.
 	}
 	return 1;
 }

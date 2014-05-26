@@ -95,7 +95,12 @@ bool BotCore::onTLSConnect (const gloox::CertInfo &info)
 
 void BotCore::processMessage (MUCRoom* room, const Message& msg, bool priv)
 {
-    // TODO: What is this?
+    // TODO: Check permissions before attempting to process the message
+    if(sysCmd.process(msg.body())) {
+        // Command was processed do nothing else
+    } else {
+        // TODO: Send the message to the other modules
+    }
 }
 
 void BotCore::joinRoom (const std::string& room, const std::string& service, const std::string& nick)
