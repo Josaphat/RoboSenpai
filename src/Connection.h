@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 #include <gloox/client.h>
 #include <gloox/connectionlistener.h>
 #include <gloox/messagehandler.h>
@@ -11,6 +9,7 @@
 #include "SystemCommandsProcessor.h"
 
 class BotCore;
+class Channel;
 
 class Connection : public gloox::MessageSessionHandler, gloox::MessageHandler, gloox::ConnectionListener
 {
@@ -32,7 +31,6 @@ public: // Inherited
 
 private:
 	gloox::Client * client;
-	std::vector<gloox::MUCRoom *> rooms;
 	BotCore * bot;
 	SystemCommandsProcessor sysCmd;
 

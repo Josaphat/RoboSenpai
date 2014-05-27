@@ -2,15 +2,20 @@
 
 #include <vector>
 
+#include <gloox/client.h>
 #include <gloox/mucroomhandler.h>
+#include <gloox/presence.h>
 
 #include "BotCore.h"
+
+class Connection;
 
 class Channel : public gloox::MUCRoomHandler
 {
 public:
-	Channel (BotCore & bot, Connection & connection);
+	Channel (BotCore * bot, Connection * connection, gloox::Client * client, const gloox::JID & roomJID);
 	virtual ~Channel ();
+	void setRoom(gloox::MUCRoom * room);
 
 public: // Inherited
 	virtual void handleMUCParticipantPresence (gloox::MUCRoom* room, const gloox::MUCRoomParticipant participant, const gloox::Presence& presence);
@@ -23,10 +28,12 @@ public: // Inherited
 	virtual void handleMUCItems (gloox::MUCRoom *room, const gloox::Disco::ItemList &items);
 
 public:
-	void speak (gloox::MUCRoom * room, const std::string & message);
+	void speak (const std::string & message);
+	void join(gloox::Presence::PresenceType type = gloox::Presence::Available, const std::string & status = gloox::EmptyString, int priority = 0);
 
 private:
+    BotCore * bot;
+    Connection * connection;
+    gloox::MUCRoom * room;
 	std::string lastSpoken;
-	Connection connection;
-	BotCore bot;
 };

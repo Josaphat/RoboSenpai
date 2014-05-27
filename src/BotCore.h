@@ -1,22 +1,32 @@
 #ifndef BOTCORE_H
 #define BOTCORE_H
 
-#include "Connection.h"
+#include <string>
+#include <vector>
+
+namespace gloox {
+    class Message;
+}
+
+class Connection;
+class Channel;
 
 /**
- * BotCore handles the primary connectivity of the application.
- * This class handles connecting to the chat server and maintaining the connection.
- * It also acts as a router for messages to the various modules.
+ * BotCore holds references to the modules and the chats as well as well as
+ * a reference to the object in charge of maintaining the connection with
+ * the HipChat servers.
  */
-
 class BotCore
 {
 public:
 	BotCore (const std::string & jid, const std::string & password);
 	virtual ~BotCore ();
 	void connect ();
+	void processMessage(Channel * src, const gloox::Message & msg, bool priv);
+	void addChannel(Channel * channel);
 private:
-	Connection connection;
+	Connection * connection;
+	std::vector<Channel *> channels;
 };
 
 #endif /* BOTCORE_H */

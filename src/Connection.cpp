@@ -51,9 +51,6 @@ Connection::Connection (BotCore * bot, const std::string & jid, const std::strin
 
 Connection::~Connection ()
 {
-	for (std::vector<gloox::MUCRoom *>::iterator it = rooms.begin (); it != rooms.end (); it++) {
-		delete (*it);
-	}
 }
 
 void Connection::handleMessageSession (MessageSession * session)
@@ -63,13 +60,13 @@ void Connection::handleMessageSession (MessageSession * session)
 
 void Connection::handleMessage (const Message& msg, MessageSession* session)
 {
-	// TODO: Log
+	// TODO: Log this.
 	cerr << "[::BotCore::handleMessage]" << "Unexpected message: " << msg << endl;
 }
 
 void Connection::onConnect ()
 {
-	// TODO: Log
+	// TODO: Log this.
 	cout << "== Connection successfully established ==" << endl;
 
 	// TODO: Join the MUCs listed in a configuration file.
@@ -83,14 +80,15 @@ void Connection::onDisconnect (enum gloox::ConnectionError e)
 		// All Good.
 	}
 	else {
-		// TODO: Log
+		// TODO: Log this.
 		cerr << "== Connection error ==" << endl;
 	}
 }
 
 bool Connection::onTLSConnect (const gloox::CertInfo &info)
 {
-	// TODO: Perhaps it would be a good idea to check the cert
+	// TODO: Perhaps it would be a good idea to check the cert. Definitely do appropriate logging.
+	cout << "[TLS Cert info] cipher: " << info.cipher << " compression: " << info.compression << " issuer: " << info.issuer << endl;
 	return true;
 }
 
@@ -102,8 +100,8 @@ void Connection::connect ()
 
 void Connection::joinRoom (const std::string& room, const std::string& service, const std::string& nick)
 {
-	Channel * myHandler = new Channel (*bot, *this);
-	JID roomJID (room + "@" + service + "/" + nick);
-	rooms.push_back (new MUCRoom (client, roomJID, myHandler, 0));
-	rooms.back ()->join (Presence::Available, "ROBOSENPAI IN THE HAUUUUUS");
+    JID roomJID (room + "@" + service + "/" + nick);
+	Channel * myChannel = new Channel (bot, this, client, roomJID);
+	bot->addChannel(myChannel);
+	myChannel->join ();
 }
