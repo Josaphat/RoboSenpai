@@ -9,14 +9,12 @@
 #include <gloox/disco.h>
 #include <gloox/presence.h>
 
-
 using namespace std;
 using namespace gloox;
 
-// BOOOOOOBIES is something the bot should never speak
-Channel::Channel (BotCore & bot) : lastSpoken ("BOOOOOOOOOOOOOOBIES!"), bot (bot)
+Channel::Channel (BotCore & bot, Connection & connection) : lastSpoken ("AaardvarkappleSauceee!111!11@#$%!@"), connection (connection), bot (bot)
 {
-
+	// AaardvarkappleSauceee!111!11@#$%!@ is just something the bot would never say
 }
 
 
@@ -26,8 +24,7 @@ Channel::~Channel ()
 
 void Channel::handleMUCParticipantPresence (MUCRoom* room, const MUCRoomParticipant participant, const Presence& presence)
 {
-	// TODO: Stub
-    // This should query the plugins to see if they care to handle the event
+	// TODO: This should query the plugins to see if they care to handle the event
 	cout << "[" << room->name () << "] " << participant.nick->resource () << " ";
 	Presence::PresenceType p = presence.subtype ();
 	switch (p) {
@@ -68,15 +65,15 @@ void Channel::handleMUCParticipantPresence (MUCRoom* room, const MUCRoomParticip
 void Channel::handleMUCMessage (MUCRoom* room, const Message& msg, bool priv)
 {
 	if (msg.body () == lastSpoken) {
-		// We're getting back the message we just sent. Ignore it!
+		// Ignore it. This is the message we just sent.
 	}
 	else {
-		// Otherwise,
-		// Log it
+		// TODO: Log
 		cout << "[" << room->name () << ": " << msg.from ().resource () << "(" << priv << ") ]  " << msg.body () << endl;
-		// and react.
-		bot.processMessage (room, msg, priv);
-        // TODO: Actually react
+
+		// TODO: React
+		//bot.processMessage (room, msg, priv);
+
 		speak (room, "Tell me more about " + msg.body () + ", " + msg.from ().resource ());
 	}
 }
@@ -89,12 +86,9 @@ bool Channel::handleMUCRoomCreation (MUCRoom* room)
 
 void Channel::handleMUCSubject (MUCRoom* room, const std::string &nick, const std::string &subject)
 {
-    // TODO: This happens when the topic is set by someone. The first instance
-    // of this upon joining a room should be ignored as it is just an
-    // announcement of the topic. But if it changes then it should be given to
-    // the plugins
 	cout << room->name () << " Subject is \"" << subject << "\"";
 	if (nick.empty ()) {
+		// If no nick is given, then the topic was already set.
 		cout << endl;
 	}
 	else {
@@ -110,7 +104,7 @@ void Channel::handleMUCInviteDecline (MUCRoom* room, const JID& invitee, const s
 void Channel::handleMUCError (MUCRoom* room, StanzaError error)
 {
 	// TODO: Stub.
-	cout << "["<<room->name() << "] Channel Error: ";
+	cout << "[" << room->name () << "] Channel Error: ";
 	switch (error) {
 	case gloox::StanzaErrorBadRequest:
 		cout << "Bad Request.";

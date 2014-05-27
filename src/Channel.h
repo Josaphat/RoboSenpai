@@ -9,10 +9,10 @@
 class Channel : public gloox::MUCRoomHandler
 {
 public:
-	Channel (BotCore & bot);
+	Channel (BotCore & bot, Connection & connection);
 	virtual ~Channel ();
 
-public: // Implementations
+public: // Inherited
 	virtual void handleMUCParticipantPresence (gloox::MUCRoom* room, const gloox::MUCRoomParticipant participant, const gloox::Presence& presence);
 	virtual void handleMUCMessage (gloox::MUCRoom* room, const gloox::Message& msg, bool priv);
 	virtual bool handleMUCRoomCreation (gloox::MUCRoom* room);
@@ -27,5 +27,6 @@ public:
 
 private:
 	std::string lastSpoken;
+	Connection connection;
 	BotCore bot;
 };
