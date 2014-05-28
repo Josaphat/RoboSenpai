@@ -6,7 +6,13 @@
 #include <gloox/messagesessionhandler.h>
 #include <gloox/mucroom.h>
 
+#include <yaml-cpp/yaml.h>
+
 #include "SystemCommandsProcessor.h"
+
+namespace YAML {
+    class Node;
+}
 
 class BotCore;
 class Channel;
@@ -17,6 +23,7 @@ public:
 	Connection (BotCore * bot, const std::string & jid, const std::string & password);
 	virtual ~Connection ();
 
+	void setConfig(YAML::Node * config);
 	void connect ();
 
 protected:
@@ -33,6 +40,6 @@ private:
 	gloox::Client * client;
 	BotCore * bot;
 	SystemCommandsProcessor sysCmd;
-
+	YAML::Node * config;
 };
 

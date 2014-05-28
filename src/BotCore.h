@@ -4,8 +4,14 @@
 #include <string>
 #include <vector>
 
+
+
 namespace gloox {
     class Message;
+}
+
+namespace YAML {
+    class Node;
 }
 
 class Connection;
@@ -21,7 +27,7 @@ class BotCore
 public:
 	BotCore (const std::string & jid, const std::string & password);
 	virtual ~BotCore ();
-	void connect ();
+	void connect (YAML::Node * config);
 	void processMessage(Channel * src, const gloox::Message & msg, bool priv);
 	void addChannel(Channel * channel);
 private:

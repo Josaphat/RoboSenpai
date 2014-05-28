@@ -20,8 +20,9 @@ BotCore::~BotCore ()
     }
 }
 
-void BotCore::connect ()
+void BotCore::connect (YAML::Node * config)
 {
+    connection->setConfig(config);
 	connection->connect ();
 }
 

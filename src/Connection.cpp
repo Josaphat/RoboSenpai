@@ -69,9 +69,15 @@ void Connection::onConnect ()
 	// TODO: Log this.
 	cout << "== Connection successfully established ==" << endl;
 
-	// TODO: Join the MUCs listed in a configuration file.
-	joinRoom ("97498_botdev", "conf.hipchat.com", "Josaphat Valdivia");
-	//joinRoom ("97498_the_chuckledome", "conf.hipchat.com", "Josaphat Valdivia");
+	// Join the rooms listed in the configuration file
+	const std::string service = (*config)["service"].as<std::string>();
+	const std::string nick = (*config)["nick"].as<std::string>();
+
+	YAML::Node rooms = (*config)["rooms"];
+	for(YAML::const_iterator it = rooms.begin(); it != rooms.end(); ++it) {
+            const std::string roomName = it->as<std::string>();
+            joinRoom(roomName, service, nick);
+	}
 }
 
 void Connection::onDisconnect (enum gloox::ConnectionError e)
@@ -92,6 +98,10 @@ bool Connection::onTLSConnect (const gloox::CertInfo &info)
 	return true;
 }
 
+void Connection::setConfig(YAML::Node * config) {
+    this->config = config;
+}
+
 /// Invokes the client's blocking infinite loop
 void Connection::connect ()
 {
@@ -100,6 +110,7 @@ void Connection::connect ()
 
 void Connection::joinRoom (const std::string& room, const std::string& service, const std::string& nick)
 {
+    std::cout << "roomJID: " << room << "@" << service << "/" << nick << endl;
     JID roomJID (room + "@" + service + "/" + nick);
 	Channel * myChannel = new Channel (bot, this, client, roomJID);
 	bot->addChannel(myChannel);
