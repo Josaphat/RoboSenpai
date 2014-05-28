@@ -8,7 +8,6 @@ using namespace std;
 
 int main (int argc, char * argv [])
 {
-    // TODO: Read in the chat info from a configuration file
     YAML::Node config;
     try {
         config = YAML::LoadFile("../config.yml");
@@ -17,7 +16,6 @@ int main (int argc, char * argv [])
     }
 
     try {
-        // "97498_713477@chat.hipchat.com"
         const std::string jid = config["jid"].as<std::string>();
         const std::string password = config["password"].as<std::string>();
 
@@ -30,11 +28,11 @@ int main (int argc, char * argv [])
 
 	cout << "Returned..." << endl;
 	for (;;) {
-        // This infinite loop is for debugging purposes to make sure that
-        // the host application (console window) doesn't terminate before
-        // the output of the application can be displayed.
+            // This infinite loop is for debugging purposes to make sure that
+            // the host application (console window) doesn't terminate before
+            // the output of the application can be displayed.
 
-		// TODO: Add logging
+            // TODO: Add logging
 	}
 	return 1;
 }

@@ -35,5 +35,5 @@ private:
     BotCore * bot;
     Connection * connection;
     gloox::MUCRoom * room;
-	std::string lastSpoken;
+    std::string lastSpoken;
 };

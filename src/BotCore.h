@@ -5,7 +5,6 @@
 #include <vector>
 
 
-
 namespace gloox {
     class Message;
 }
