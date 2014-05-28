@@ -1,0 +1,11 @@
+#
+# Configuration file for RoboSenpai
+#
+
+jid : "XXXXX_nnnnnn@chat.hipchat.com"
+password : "LetMeIn"
+service : "conf.hipchat.com"
+nick : "My Nick"
+
+rooms :
+  - XXXXX_ChannelForBot
