@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include <gloox/client.h>
 #include <gloox/mucroom.h>
 #include <gloox/presence.h>
 #include <gloox/message.h>
@@ -31,7 +32,7 @@ void Channel::join(gloox::Presence::PresenceType type, const std::string & statu
     room->join(type, status, priority);
 }
 
-void Channel::handleMUCParticipantPresence (MUCRoom* room, const MUCRoomParticipant participant, const Presence& presence)
+void Channel::handleMUCParticipantPresence (MUCRoom * room, const MUCRoomParticipant participant, const Presence & presence)
 {
 	// TODO: This should query the plugins to see if they care to handle the event
 	cout << "[" << room->name () << "] " << participant.nick->resource () << " ";
@@ -71,7 +72,7 @@ void Channel::handleMUCParticipantPresence (MUCRoom* room, const MUCRoomParticip
 	cout << endl;
 }
 
-void Channel::handleMUCMessage (MUCRoom* room, const Message& msg, bool priv)
+void Channel::handleMUCMessage (MUCRoom * room, const Message & msg, bool priv)
 {
 	if (msg.body () == lastSpoken) {
 		// Ignore it. This is the message we just sent.
@@ -84,13 +85,13 @@ void Channel::handleMUCMessage (MUCRoom* room, const Message& msg, bool priv)
 	}
 }
 
-bool Channel::handleMUCRoomCreation (MUCRoom* room)
+bool Channel::handleMUCRoomCreation (MUCRoom * room)
 {
 	// TODO: This is a stub. What does scenario does this handle and would plugins care?
 	return true;
 }
 
-void Channel::handleMUCSubject (MUCRoom* room, const std::string &nick, const std::string &subject)
+void Channel::handleMUCSubject (MUCRoom * room, const std::string & nick, const std::string & subject)
 {
 	cout << room->name () << " Subject is \"" << subject << "\"";
 	if (nick.empty ()) {
@@ -102,12 +103,12 @@ void Channel::handleMUCSubject (MUCRoom* room, const std::string &nick, const st
 	}
 }
 
-void Channel::handleMUCInviteDecline (MUCRoom* room, const JID& invitee, const std::string& reason)
+void Channel::handleMUCInviteDecline (MUCRoom * room, const JID & invitee, const std::string & reason)
 {
 	// TODO: This is a stub. Log that this method was called but nothing was done.
 }
 
-void Channel::handleMUCError (MUCRoom* room, StanzaError error)
+void Channel::handleMUCError (MUCRoom * room, StanzaError error)
 {
 	// TODO: Log this. Perhaps attempt a reconnect/rejoin.
 	cout << "[" << room->name () << "] Channel Error: ";
@@ -194,13 +195,13 @@ void Channel::handleMUCError (MUCRoom* room, StanzaError error)
 	cout << endl;
 }
 
-void Channel::handleMUCInfo (MUCRoom* room, int features, const std::string &name, const DataForm *infoForm)
+void Channel::handleMUCInfo (MUCRoom * room, int features, const std::string & name, const DataForm * infoForm)
 {
 	// TODO: This is a stub. At least log that this method is being called.
 	cout << "[" << room->name () << "] Room info: Features: " << features << " name: " << name << endl;
 }
 
-void Channel::handleMUCItems (MUCRoom *room, const Disco::ItemList &items)
+void Channel::handleMUCItems (MUCRoom * room, const Disco::ItemList & items)
 {
 	// TODO: This is a stub. At least log that this method is being called.
 }

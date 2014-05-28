@@ -2,14 +2,15 @@ project (RoboSenpai)
 cmake_minimum_required (VERSION 2.6)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-find_package(gloox REQUIRED)
-find_package(YamlCpp REQUIRED)
+FIND_PACKAGE(gloox REQUIRED)
+FIND_PACKAGE(Boost REQUIRED)
+FIND_PACKAGE(YamlCpp REQUIRED)
 
-include_directories(${GLOOX_INCLUDE_DIR} ${YAMLCPP_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${GLOOX_INCLUDE_DIR} ${YAMLCPP_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
 
 set(LIBS ${LIBS} ${GLOOX_LIBRARIES} ${YAMLCPP_LIBRARY})
 
-set(CMAKE_CXX_FLAGS "-Wall -std=c++11")
+set(CMAKE_CXX_FLAGS "-W4 -std=c++11 -EHsc")
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.yml ${CMAKE_CURRENT_BINARY_DIR}/config.yml COPYONLY)
 
