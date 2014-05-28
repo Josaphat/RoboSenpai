@@ -28,6 +28,7 @@ public:
 
 protected:
 	void joinRoom (const std::string & room, const std::string & service, const std::string & nick);
+	void keepAlive ();
 
 public: // Inherited
 	virtual void handleMessageSession (gloox::MessageSession * session);
@@ -42,4 +43,3 @@ private:
 	SystemCommandsProcessor sysCmd;
 	YAML::Node * config;
 };
-

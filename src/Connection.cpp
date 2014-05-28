@@ -1,6 +1,9 @@
 #include "Connection.h"
 
 #include <iostream>
+
+#include <thread>
+
 #include <gloox/message.h>
 
 #include "BotCore.h"
@@ -69,14 +72,26 @@ void Connection::onConnect ()
 	// TODO: Log this.
 	cout << "== Connection successfully established ==" << endl;
 
+	// Keep the connection alive
+	// TODO: Clean this up. I don't fully understand Lambdas in C++11 yet.
+	unsigned int intervalSeconds = 60;
+	std::function<void (void)> func = std::bind (&Connection::keepAlive, this);
+	Connection * conn = this;
+	std::thread ([func, intervalSeconds]() {
+		while (true) {
+			std::this_thread::sleep_for (std::chrono::seconds (intervalSeconds));
+			func ();
+		}
+	}).detach ();
+
 	// Join the rooms listed in the configuration file
-	const std::string service = (*config)["service"].as<std::string>();
-	const std::string nick = (*config)["nick"].as<std::string>();
+	const std::string service = (*config)["service"].as<std::string> ();
+	const std::string nick = (*config)["nick"].as<std::string> ();
 
 	YAML::Node rooms = (*config)["rooms"];
-	for(YAML::const_iterator it = rooms.begin(); it != rooms.end(); ++it) {
-            const std::string roomName = it->as<std::string>();
-            joinRoom(roomName, service, nick);
+	for (YAML::const_iterator it = rooms.begin (); it != rooms.end (); ++it) {
+		const std::string roomName = it->as<std::string> ();
+		joinRoom (roomName, service, nick);
 	}
 }
 
@@ -98,8 +113,9 @@ bool Connection::onTLSConnect (const gloox::CertInfo &info)
 	return true;
 }
 
-void Connection::setConfig(YAML::Node * config) {
-    this->config = config;
+void Connection::setConfig (YAML::Node * config)
+{
+	this->config = config;
 }
 
 /// Invokes the client's blocking infinite loop
@@ -110,9 +126,16 @@ void Connection::connect ()
 
 void Connection::joinRoom (const std::string& room, const std::string& service, const std::string& nick)
 {
-    std::cout << "roomJID: " << room << "@" << service << "/" << nick << endl;
-    JID roomJID (room + "@" + service + "/" + nick);
+	std::cout << "roomJID: " << room << "@" << service << "/" << nick << endl;
+	JID roomJID (room + "@" + service + "/" + nick);
 	Channel * myChannel = new Channel (bot, this, client, roomJID);
-	bot->addChannel(myChannel);
+	bot->addChannel (myChannel);
 	myChannel->join ();
+}
+
+void Connection::keepAlive ()
+{
+	// TODO: Log this with highest verbose.
+	//std::cout << "White space ping." << std::endl;
+	client->whitespacePing ();
 }
