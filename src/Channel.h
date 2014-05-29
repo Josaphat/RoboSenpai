@@ -1,5 +1,6 @@
 #pragma once
 
+#include <queue>
 #include <vector>
 
 #include <gloox/mucroomhandler.h>
@@ -35,5 +36,5 @@ private:
     BotCore * bot;
     Connection * connection;
     gloox::MUCRoom * room;
-    std::string lastSpoken;
+    std::queue<const std::string> lastSpoken;
 };
