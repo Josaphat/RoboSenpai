@@ -2,10 +2,15 @@
 # Configuration file for RoboSenpai
 #
 
-jid : "XXXXX_nnnnnn@chat.hipchat.com"
+
+jid : "XXXXX_nnnnnn@chat.hipchat.com" # The bot's JID
+nick : "Bot Nick"
 password : "LetMeIn"
 service : "conf.hipchat.com"
-nick : "My Nick"
 
 rooms :
   - XXXXX_ChannelForBot
+  
+modules :
+  - PennyArcade
+  
