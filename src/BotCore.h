@@ -4,17 +4,19 @@
 #include <string>
 #include <vector>
 
-
-namespace gloox {
-    class Message;
+namespace gloox
+{
+	class Message;
 }
 
-namespace YAML {
-    class Node;
+namespace YAML
+{
+	class Node;
 }
 
 class Connection;
 class Channel;
+class Module;
 
 /**
  * BotCore holds references to the modules and the chats as well as well as
@@ -24,14 +26,18 @@ class Channel;
 class BotCore
 {
 public:
-	BotCore (const std::string & jid, const std::string & password);
+	BotCore (const std::string & jid, const std::string & nick, const std::string & password);
 	virtual ~BotCore ();
 	void connect (YAML::Node * config);
-	void processMessage(Channel * src, const gloox::Message & msg, bool priv);
-	void addChannel(Channel * channel);
+	void processMessage (Channel * src, const gloox::Message & msg, bool priv);
+	void addChannel (Channel * channel);
+
+	const std::string JID;
+	const std::string nick;
 private:
 	Connection * connection;
 	std::vector<Channel *> channels;
+	std::vector<Module *> modules;
 };
 
 #endif /* BOTCORE_H */
