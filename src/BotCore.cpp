@@ -3,11 +3,14 @@
 #include <string>
 
 #include <gloox/message.h>
+#include <yaml-cpp/yaml.h>
 
 #include "Channel.h"
 #include "Connection.h"
+#include "Module.h"
 
-BotCore::BotCore (const std::string & jid, const std::string & pass) : connection(new Connection(this, jid, pass))
+BotCore::BotCore (const std::string & jid, const std::string & nick, const std::string & pass)
+: JID (jid), nick (nick), connection (new Connection (this, jid, pass)), channels (), modules ()
 {
 }
 
@@ -15,24 +18,34 @@ BotCore::BotCore (const std::string & jid, const std::string & pass) : connectio
 typedef std::vector<Channel *>::iterator ChanIter;
 BotCore::~BotCore ()
 {
-    for(ChanIter it = channels.begin(); it != channels.end(); it++) {
-        delete *it;
-    }
+	for (ChanIter it = channels.begin (); it != channels.end (); it++) {
+		delete *it;
+	}
 }
 
 void BotCore::connect (YAML::Node * config)
 {
-    connection->setConfig(config);
+	connection->setConfig (config);
+	// Add all the modules in the config file
+	YAML::Node modules = (*config)["modules"];
+	for (YAML::const_iterator it = modules.begin (); it != modules.end (); ++it) {
+		const std::string moduleName = it->as<std::string> ();
+		this->modules.push_back (Module::myMap[moduleName]);
+	}
 	connection->connect ();
 }
 
-void BotCore::processMessage(Channel * src, const gloox::Message & msg, bool priv)
+void BotCore::processMessage (Channel * src, const gloox::Message & msg, bool /*priv*/)
 {
-    // TODO: Process the message
-    src->speak("(robosenpai) " + msg.body () + ", from " + msg.from ().resource ());
+	// TODO: Process system-level messages
+
+	// Pass the message to all of the modules
+	for (Module * m : modules) {
+		m->accept (src, msg);
+	}
 }
 
-void BotCore::addChannel(Channel * channel)
+void BotCore::addChannel (Channel * channel)
 {
-    channels.push_back(channel);
+	channels.push_back (channel);
 }
