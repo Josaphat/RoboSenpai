@@ -1,10 +1,9 @@
 #include "Connection.h"
 
 #include <iostream>
-
 #include <thread>
-
 #include <gloox/message.h>
+#include <yaml-cpp/yaml.h>
 
 #include "BotCore.h"
 #include "Channel.h"
@@ -12,35 +11,8 @@
 using namespace std;
 using namespace gloox;
 
-ostream& operator<<(ostream& os, const Message & msg)
-{
-	Message::MessageType mType = msg.subtype ();
-	os << "type: ";
-	switch (mType) {
-	case gloox::Message::Chat:
-		os << "Chat";
-		break;
-	case gloox::Message::Error:
-		os << "Error";
-		break;
-	case gloox::Message::Groupchat:
-		os << "Groupchat";
-		break;
-	case gloox::Message::Headline:
-		os << "Headline";
-		break;
-	case gloox::Message::Normal:
-		os << "Normal";
-		break;
-	case gloox::Message::Invalid:
-		os << "Invalid";
-		break;
-	default:
-		break;
-	}
-	os << " from:'" << msg.from ().resource () << "' subject: '" << msg.subject () << " body:'" << msg.body () << "'";
-	return os;
-}
+// forward declare
+ostream& operator<<(ostream& os, const Message & msg);
 
 Connection::Connection (BotCore * bot, const std::string & jid, const std::string & password) : bot (bot)
 {
@@ -61,7 +33,7 @@ void Connection::handleMessageSession (MessageSession * session)
 	session->registerMessageHandler (this);
 }
 
-void Connection::handleMessage (const Message& msg, MessageSession* session)
+void Connection::handleMessage (const Message& msg, MessageSession * /*session*/)
 {
 	// TODO: Log this.
 	cerr << "[::BotCore::handleMessage]" << "Unexpected message: " << msg << endl;
@@ -76,9 +48,8 @@ void Connection::onConnect ()
 	// TODO: Clean this up. I don't fully understand Lambdas in C++11 yet.
 	unsigned int intervalSeconds = 60;
 	std::function<void (void)> func = std::bind (&Connection::keepAlive, this);
-	Connection * conn = this;
 	std::thread ([func, intervalSeconds]() {
-		while (true) {
+		for (;;) {
 			std::this_thread::sleep_for (std::chrono::seconds (intervalSeconds));
 			func ();
 		}
@@ -138,4 +109,34 @@ void Connection::keepAlive ()
 	// TODO: Log this with highest verbose.
 	//std::cout << "White space ping." << std::endl;
 	client->whitespacePing ();
+}
+
+ostream& operator<<(ostream& os, const Message & msg)
+{
+	Message::MessageType mType = msg.subtype ();
+	os << "type: ";
+	switch (mType) {
+	case gloox::Message::Chat:
+		os << "Chat";
+		break;
+	case gloox::Message::Error:
+		os << "Error";
+		break;
+	case gloox::Message::Groupchat:
+		os << "Groupchat";
+		break;
+	case gloox::Message::Headline:
+		os << "Headline";
+		break;
+	case gloox::Message::Normal:
+		os << "Normal";
+		break;
+	case gloox::Message::Invalid:
+		os << "Invalid";
+		break;
+	default:
+		break;
+	}
+	os << " from:'" << msg.from ().resource () << "' subject: '" << msg.subject () << " body:'" << msg.body () << "'";
+	return os;
 }

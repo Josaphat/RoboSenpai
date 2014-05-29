@@ -6,8 +6,6 @@
 #include <gloox/messagesessionhandler.h>
 #include <gloox/mucroom.h>
 
-#include <yaml-cpp/yaml.h>
-
 #include "SystemCommandsProcessor.h"
 
 namespace YAML {

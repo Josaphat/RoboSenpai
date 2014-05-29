@@ -31,5 +31,4 @@ bool SystemCommandsProcessor::process (const std::string & msg)
 	    }
 	    return processed;
 	}
-	return false;
 }
