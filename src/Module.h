@@ -4,27 +4,25 @@
 #include <string>
 #include "Scraper.h"
 
-// Forward declare
-namespace gloox
-{
-	class Message;
+// Forward declarations
+namespace gloox {
+    class Message;
 }
-
 class BotCore;
 class Channel;
 
-class Module
-{
+
+class Module {
 public:
-	Module (const std::string & name);
-	virtual ~Module ();
+    Module(const std::string& name);
+    virtual ~Module();
 
-	void setBot (BotCore * bot);
-	virtual void accept (Channel * src, const gloox::Message & msg) = 0;
+    void setBot(BotCore* bot);
+    virtual void accept(Channel* src, const gloox::Message& msg) = 0;
 
-	static std::map<const std::string, Module *> myMap;
+    static std::map<std::string, Module*> myMap;
 
 protected:
-	BotCore * bot;
     Scraper scraper;
+    BotCore* bot;
 };

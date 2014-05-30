@@ -9,43 +9,45 @@
 #include "Connection.h"
 #include "Module.h"
 
-BotCore::BotCore (const std::string & jid, const std::string & nick, const std::string & pass)
-: JID (jid), nick (nick), connection (new Connection (this, jid, pass)), channels (), modules ()
+BotCore::BotCore(const std::string& jid, const std::string& nick, const std::string& pass)
+    : JID(jid), nick(nick), connection(new Connection(this, jid, pass)), channels(), modules()
 {
 }
 
 
-typedef std::vector<Channel *>::iterator ChanIter;
-BotCore::~BotCore ()
+typedef std::vector<Channel*>::iterator ChanIter;
+BotCore::~BotCore()
 {
-	for (ChanIter it = channels.begin (); it != channels.end (); it++) {
-		delete *it;
-	}
+    for (ChanIter it = channels.begin(); it != channels.end(); it++) {
+        delete *it;
+    }
 }
 
-void BotCore::connect (YAML::Node * config)
+void BotCore::connect(YAML::Node* config)
 {
-	connection->setConfig (config);
-	// Add all the modules in the config file
-	YAML::Node modules = (*config)["modules"];
-	for (YAML::const_iterator it = modules.begin (); it != modules.end (); ++it) {
-		const std::string moduleName = it->as<std::string> ();
-		this->modules.push_back (Module::myMap[moduleName]);
-	}
-	connection->connect ();
+    connection->setConfig(config);
+    // Add all the modules in the config file
+    YAML::Node modules = (*config) ["modules"];
+
+    for (YAML::const_iterator it = modules.begin(); it != modules.end(); ++it) {
+        const std::string moduleName = it->as<std::string> ();
+        this->modules.push_back(Module::myMap[moduleName]);
+    }
+
+    connection->connect();
 }
 
-void BotCore::processMessage (Channel * src, const gloox::Message & msg, bool /*priv*/)
+void BotCore::processMessage(Channel* src, const gloox::Message& msg, bool /*priv*/)
 {
-	// TODO: Process system-level messages
+    // TODO: Process system-level messages
 
-	// Pass the message to all of the modules
-	for (Module * m : modules) {
-		m->accept (src, msg);
-	}
+    // Pass the message to all of the modules
+    for (Module* m : modules) {
+        m->accept(src, msg);
+    }
 }
 
-void BotCore::addChannel (Channel * channel)
+void BotCore::addChannel(Channel* channel)
 {
-	channels.push_back (channel);
+    channels.push_back(channel);
 }
