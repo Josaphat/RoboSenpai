@@ -1,5 +1,4 @@
-#ifndef BOTCORE_H
-#define BOTCORE_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -37,4 +36,3 @@ private:
     std::vector<Module*> modules;
 };
 
-#endif /* BOTCORE_H */

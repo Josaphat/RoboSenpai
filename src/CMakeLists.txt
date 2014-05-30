@@ -1,20 +1,22 @@
-SET (SOURCE
-     SystemCommandsProcessor.cpp
-     Connection.cpp
-     Module.cpp
-     BotCore.cpp
-     Channel.cpp
-     main.cpp
-    )
+SET(SOURCE
+	SystemCommandsProcessor.cpp
+	Connection.cpp
+    Scraper.cpp
+	Module.cpp
+	BotCore.cpp
+	Channel.cpp
+	main.cpp
+)
 
-SET (HEADERS
-     SystemCommandModule.h
-     SystemCommandsProcessor.h
-     Connection.h
-     Module.h
-     BotCore.h
-     Channel.h
-    )
+SET(HEADERS
+	SystemCommandModule.h
+	SystemCommandsProcessor.h
+	Connection.h
+    Scraper.h
+	Module.h
+	BotCore.h
+	Channel.h
+)
 
 ADD_SUBDIRECTORY (modules)
 LIST (APPEND SOURCE ${MODULES_SOURCE})

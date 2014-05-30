@@ -2,6 +2,7 @@
 
 #include <map>
 #include <string>
+#include "Scraper.h"
 
 // Forward declarations
 namespace gloox {
@@ -22,5 +23,6 @@ public:
     static std::map<std::string, Module*> myMap;
 
 protected:
+    Scraper scraper;
     BotCore* bot;
 };
