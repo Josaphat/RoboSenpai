@@ -2,6 +2,7 @@
 
 #include <map>
 #include <string>
+#include "Scraper.h"
 
 // Forward declare
 namespace gloox
@@ -25,4 +26,5 @@ public:
 
 protected:
 	BotCore * bot;
+    Scraper scraper;
 };

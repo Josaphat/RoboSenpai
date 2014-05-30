@@ -1,6 +1,7 @@
 SET(SOURCE
 	SystemCommandsProcessor.cpp
 	Connection.cpp
+    Scraper.cpp
 	Module.cpp
 	BotCore.cpp
 	Channel.cpp
@@ -11,6 +12,7 @@ SET(HEADERS
 	SystemCommandModule.h
 	SystemCommandsProcessor.h
 	Connection.h
+    Scraper.h
 	Module.h
 	BotCore.h
 	Channel.h
