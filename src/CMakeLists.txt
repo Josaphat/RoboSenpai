@@ -1,27 +1,27 @@
-SET(SOURCE
-	SystemCommandsProcessor.cpp
-	Connection.cpp
-	Module.cpp
-	BotCore.cpp
-	Channel.cpp
-	main.cpp
-)
+SET (SOURCE
+     SystemCommandsProcessor.cpp
+     Connection.cpp
+     Module.cpp
+     BotCore.cpp
+     Channel.cpp
+     main.cpp
+    )
 
-SET(HEADERS
-	SystemCommandModule.h
-	SystemCommandsProcessor.h
-	Connection.h
-	Module.h
-	BotCore.h
-	Channel.h
-)
+SET (HEADERS
+     SystemCommandModule.h
+     SystemCommandsProcessor.h
+     Connection.h
+     Module.h
+     BotCore.h
+     Channel.h
+    )
 
-ADD_SUBDIRECTORY(modules)
-LIST(APPEND SOURCE ${MODULES_SOURCE})
-LIST(APPEND HEADERS ${MODULES_HEADERS})
+ADD_SUBDIRECTORY (modules)
+LIST (APPEND SOURCE ${MODULES_SOURCE})
+LIST (APPEND HEADERS ${MODULES_HEADERS})
 
-SOURCE_GROUP(modules FILES ${MODULES_SOURCE} ${MODULES_HEADERS})
-	
+SOURCE_GROUP (modules FILES ${MODULES_SOURCE} ${MODULES_HEADERS})
+
 add_executable (RoboSenpai ${SOURCE} ${HEADERS})
 
-target_link_libraries(RoboSenpai ${LIBS})
+target_link_libraries (RoboSenpai ${LIBS})

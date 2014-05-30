@@ -6,36 +6,37 @@
 
 using namespace std;
 
-int main (int, char * [])
+int main(int, char* [])
 {
-	YAML::Node config;
-	try {
-		config = YAML::LoadFile ("../config.yml");
-	}
-	catch (YAML::BadFile & e) {
-		cerr << "Error loading config.yml : " << e.what () << endl;
-	}
+    YAML::Node config;
 
-	try {
-		const std::string jid = config["jid"].as<std::string> ();
-		const std::string nick = config["nick"].as<std::string> ();
-		const std::string password = config["password"].as<std::string> ();
+    try {
+        config = YAML::LoadFile("../config.yml");
+    } catch (YAML::BadFile& e) {
+        cerr << "Error loading config.yml : " << e.what() << endl;
+    }
 
-		BotCore bot (jid, nick, password);
+    try {
+        const std::string jid = config["jid"].as<std::string> ();
+        const std::string nick = config["nick"].as<std::string> ();
+        const std::string password = config["password"].as<std::string> ();
 
-		bot.connect (&config);
-	}
-	catch (YAML::Exception & e) {
-		cerr << "Error getting data from config file : " << e.what () << endl;
-	}
+        BotCore bot(jid, nick, password);
 
-	cout << "Returned..." << endl;
-	for (;;) {
-		// This infinite loop is for debugging purposes to make sure that
-		// the host application (console window) doesn't terminate before
-		// the output of the application can be displayed.
+        bot.connect(&config);
+    } catch (YAML::Exception& e) {
+        cerr << "Error getting data from config file : " << e.what() << endl;
+    }
 
-		// TODO: Add logging
-	}
-	return 1;
+    cout << "Returned..." << endl;
+
+    for (;;) {
+        // This infinite loop is for debugging purposes to make sure that
+        // the host application (console window) doesn't terminate before
+        // the output of the application can be displayed.
+
+        // TODO: Add logging
+    }
+
+    return 1;
 }
