@@ -53,5 +53,6 @@ private:
 
 private: // Hide these
     BotCore(const BotCore&) {}
-    BotCore& operator=(const BotCore&) {}
+    BotCore& operator=(const BotCore&) { return *this;}
 };
+
