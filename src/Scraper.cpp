@@ -39,7 +39,7 @@ pugi::xml_document* Scraper::loadUrl(const std::string& url)
     TidyBuffer output = {0};
     TidyBuffer errbuf = {0};
     int rc = -1;
-    bool ok = tidyOptSetBool(tdoc, TidyXhtmlOut, yes);
+    Bool ok = tidyOptSetBool(tdoc, TidyXhtmlOut, yes);
     if (ok){
         // capture diagnostics
         rc = tidySetErrorBuffer(tdoc, &errbuf);
