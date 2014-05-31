@@ -14,5 +14,5 @@ public:
     virtual ~PennyArcade();
 
 public: // Override
-    virtual void commandAction (Channel* src, const std::vector<std::string>& args);
+    virtual void commandAction(Channel* src, const std::vector<std::string>& args);
 };

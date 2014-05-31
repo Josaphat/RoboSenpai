@@ -1,8 +1,5 @@
 #pragma once
 
-#include <queue>
-#include <vector>
-
 #include <gloox/mucroomhandler.h>
 #include <gloox/presence.h>
 
@@ -13,11 +10,15 @@ namespace gloox {
 }
 class Connection;
 
+//
+/// The Channel object provides the interface to a multi-user chat. It does
+/// this by wrapping a gloox MUCRoom. When a message is received it gets passed
+/// to the bot for processing.
+//
 class Channel : public gloox::MUCRoomHandler {
 public:
     Channel(BotCore* bot, Connection* connection, gloox::Client* client, const gloox::JID& roomJID);
     virtual ~Channel();
-    void setRoom(gloox::MUCRoom* room);
 
 public: // Inherited
     virtual void handleMUCParticipantPresence(gloox::MUCRoom* room, const gloox::MUCRoomParticipant participant, const gloox::Presence& presence);
@@ -30,12 +31,19 @@ public: // Inherited
     virtual void handleMUCItems(gloox::MUCRoom* room, const gloox::Disco::ItemList& items);
 
 public:
+    //
+    /// Broadcasts a message in this Channel's MUCRoom.
+    //
     void speak(const std::string& message);
+
+    //
+    /// Joins the Channel.
+    /// Before this method is called, none of the event handlers will be activated.
+    //
     void join(gloox::Presence::PresenceType type = gloox::Presence::Available, const std::string& status = gloox::EmptyString, int priority = 0);
 
 private:
     BotCore* bot;
     Connection* connection;
     gloox::MUCRoom* room;
-    std::queue<std::string> lastSpoken;
 };
