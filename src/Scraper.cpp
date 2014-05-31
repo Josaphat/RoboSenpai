@@ -28,7 +28,7 @@ pugi::xml_document* Scraper::loadUrl(const std::string& url)
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writeCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
-//    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // Logging
+    //    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // Logging
 
     // Tell curl to do its thing and grab the stuff at the url we gave it
     curl_easy_perform(curl);
@@ -39,36 +39,37 @@ pugi::xml_document* Scraper::loadUrl(const std::string& url)
     TidyBuffer output = {0};
     TidyBuffer errbuf = {0};
     int rc = -1;
-    bool ok = tidyOptSetBool(tdoc, TidyXhtmlOut, yes);
-    if (ok){
-        // capture diagnostics
-        rc = tidySetErrorBuffer(tdoc, &errbuf);
-    }
-    if (rc >= 0) {
-        rc = tidyParseString(tdoc, data.c_str());
-    }
-    if (rc >= 0) {
-        rc = tidyCleanAndRepair(tdoc);
-    }
-    if (rc >= 0) {
-        rc = tidyRunDiagnostics(tdoc);
-    }
-    if(rc >1) {
-        rc = (tidyOptSetBool(tdoc, TidyForceOutput, yes) ? rc : -1);
-    }
-    if(rc >=0) {
-        rc = tidySaveBuffer(tdoc, &output);
-    }
+    Bool ok = tidyOptSetBool(tdoc, TidyXhtmlOut, yes);
+
+    // capture diagnostics
+    if (ok) { rc = tidySetErrorBuffer(tdoc, &errbuf); }
+
+    // put the data into the tdoc
+    if (rc >= 0) { rc = tidyParseString(tdoc, data.c_str()); }
+
+    // Clean it up and turn it into XHTML
+    if (rc >= 0) { rc = tidyCleanAndRepair(tdoc); }
+    if (rc >= 0) { rc = tidyRunDiagnostics(tdoc); }
+    if (rc > 1) { rc = (tidyOptSetBool(tdoc, TidyForceOutput, yes) ? rc : -1); }
+
+    // Take the data out of the tdoc and store it in a buffer
+    if (rc >= 0) { rc = tidySaveBuffer(tdoc, &output); }
+
     pugi::xml_document* doc = new pugi::xml_document;
     auto result = doc->load_buffer(output.bp, output.size);
     if (result) {
         // Success!
-    } else {
+    }
+    else {
         doc = nullptr;
     }
+
+    // Clean up after the tidy library
     tidyBufFree(&output);
     tidyBufFree(&errbuf);
     tidyRelease(tdoc);
+
+    // Return the xml document
     return doc;
 }
 

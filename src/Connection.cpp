@@ -14,6 +14,8 @@ using namespace gloox;
 // forward declare
 ostream& operator<< (ostream& os, const Message& msg);
 
+// Initialize all the data necessary to make the connection but wait for
+// connect() to be invoked before sending anything over the network.
 Connection::Connection(BotCore* bot, const std::string& jid, const std::string& password) : bot(bot)
 {
     JID jID(jid);
@@ -45,9 +47,9 @@ void Connection::onConnect()
     cout << "== Connection successfully established ==" << endl;
 
     // Keep the connection alive
-    // TODO: Clean this up. I don't fully understand Lambdas in C++11 yet.
-    unsigned int intervalSeconds = 60;
-    std::function<void (void) > func = std::bind(&Connection::keepAlive, this);
+    // TODO: Clean this up? I don't fully understand Lambdas in C++11 yet.
+    const unsigned int intervalSeconds = 60;
+    std::function<void(void) > func = std::bind(&Connection::keepAlive, this);
     std::thread([func, intervalSeconds]() {
         for (;;) {
             std::this_thread::sleep_for(std::chrono::seconds(intervalSeconds));
@@ -56,13 +58,13 @@ void Connection::onConnect()
     }).detach();
 
     // Join the rooms listed in the configuration file
-    const std::string service = (*config) ["service"].as<std::string> ();
-    const std::string nick = (*config) ["nick"].as<std::string> ();
+    const std::string service = (*config)["service"].as<std::string>();
+    const std::string nick = (*config)["nick"].as<std::string>();
 
-    YAML::Node rooms = (*config) ["rooms"];
+    YAML::Node rooms = (*config)["rooms"];
 
     for (YAML::const_iterator it = rooms.begin(); it != rooms.end(); ++it) {
-        const std::string roomName = it->as<std::string> ();
+        const std::string roomName = it->as<std::string>();
         joinRoom(roomName, service, nick);
     }
 }
@@ -71,7 +73,8 @@ void Connection::onDisconnect(enum gloox::ConnectionError e)
 {
     if (e == gloox::ConnNoError) {
         // All Good.
-    } else {
+    }
+    else {
         // TODO: Log this.
         cerr << "== Connection error ==" << endl;
     }

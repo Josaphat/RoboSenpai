@@ -2,19 +2,14 @@
 
 #include "BotCore.h"
 
-std::map<std::string, Module*> Module::myMap;
+std::map<std::string, Module*> Module::moduleMap;
 
 Module::Module(const std::string& name)
 {
-    myMap[name] = this;
+    moduleMap[name] = this;
 }
 
 
 Module::~Module()
 {
-}
-
-void Module::setBot(BotCore* bot)
-{
-    this->bot = bot;
 }

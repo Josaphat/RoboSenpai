@@ -9,12 +9,10 @@
 CommandModule::CommandModule(const std::string& name, const std::vector<std::string>& commands, const char& commandChar)
     : Module(name), commands(commands), commandChar(commandChar)
 {
-
 }
 
 CommandModule::~CommandModule()
 {
-
 }
 
 // When the command module gets a message it needs to break it up, check the
@@ -27,6 +25,7 @@ void CommandModule::accept(Channel* src, const gloox::Message& msg)
     if (msgText[0] == commandChar) {
         // Remove the command character
         msgText = msgText.substr(1);
+
         // Split the message up on the whitespace and store the tokens
         std::vector<std::string> tokens;
         std::string buf;
@@ -38,7 +37,8 @@ void CommandModule::accept(Channel* src, const gloox::Message& msg)
         if (!tokens.empty()) {
             // Make sure this is the command we're looking for
             if (std::find(commands.begin(), commands.end(), tokens[0]) != commands.end()) {
-                tokens.erase(tokens.cbegin()); // Don't send the command as arg
+                // Don't send the command as arg
+                tokens.erase(tokens.cbegin());
                 commandAction(src, tokens);
             }
         }
