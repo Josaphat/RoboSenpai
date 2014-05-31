@@ -3,6 +3,7 @@ SET(SOURCE
 	Connection.cpp
     Scraper.cpp
 	Module.cpp
+	CommandModule.cpp
 	BotCore.cpp
 	Channel.cpp
 	main.cpp
@@ -14,6 +15,7 @@ SET(HEADERS
 	Connection.h
     Scraper.h
 	Module.h
+	CommandModule.h
 	BotCore.h
 	Channel.h
 )
