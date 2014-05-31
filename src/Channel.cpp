@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include <gloox/client.h>
 #include <gloox/mucroom.h>
 #include <gloox/presence.h>
 #include <gloox/message.h>
@@ -9,198 +10,239 @@
 #include <gloox/disco.h>
 #include <gloox/presence.h>
 
-using namespace std;
-using namespace gloox;
+#include "BotCore.h"
+#include "Connection.h"
 
-Channel::Channel (BotCore & bot, Connection & connection) : lastSpoken ("AaardvarkappleSauceee!111!11@#$%!@"), connection (connection), bot (bot)
-{
-	// AaardvarkappleSauceee!111!11@#$%!@ is just something the bot would never say
-}
-
-
-Channel::~Channel ()
+Channel::Channel(BotCore* bot, Connection* connection, gloox::Client* client, const gloox::JID& roomJID)
+    : bot(bot), connection(connection), room(new gloox::MUCRoom(client, roomJID, this, 0))
 {
 }
 
-void Channel::handleMUCParticipantPresence (MUCRoom* room, const MUCRoomParticipant participant, const Presence& presence)
+Channel::~Channel()
 {
-	// TODO: This should query the plugins to see if they care to handle the event
-	cout << "[" << room->name () << "] " << participant.nick->resource () << " ";
-	Presence::PresenceType p = presence.subtype ();
-	switch (p) {
-	case gloox::Presence::Available:
-		cout << "is online.";
-		break;
-	case gloox::Presence::Chat:
-		cout << "is 'available for chat.'";
-		break;
-	case gloox::Presence::Away:
-		cout << "went away.";
-		break;
-	case gloox::Presence::DND:
-		cout << "went DND.";
-		break;
-	case gloox::Presence::XA:
-		cout << "went XA.";
-		break;
-	case gloox::Presence::Unavailable:
-		cout << "went offline.";
-		break;
-	case gloox::Presence::Probe:
-		cout << "== Presence probe ==";
-		break;
-	case gloox::Presence::Error:
-		cout << "== Presence error ==";
-		break;
-	case gloox::Presence::Invalid:
-		cout << "== The stanza is invalid ==";
-		break;
-	default:
-		cout << "== default presence handling ==";
-		break;
-	}
-	cout << endl;
 }
 
-void Channel::handleMUCMessage (MUCRoom* room, const Message& msg, bool priv)
+void Channel::handleMUCParticipantPresence(gloox::MUCRoom* room, const gloox::MUCRoomParticipant participant, const gloox::Presence& presence)
 {
-	if (msg.body () == lastSpoken) {
-		// Ignore it. This is the message we just sent.
-	}
-	else {
-		// TODO: Log
-		cout << "[" << room->name () << ": " << msg.from ().resource () << "(" << priv << ") ]  " << msg.body () << endl;
+    using std::cout;
+    using gloox::Presence;
 
-		// TODO: React
-		//bot.processMessage (room, msg, priv);
+    // TODO: This should query the plugins to see if they care to handle the event
+    cout << "[" << room->name() << "] " << participant.nick->resource() << " ";
+    Presence::PresenceType p = presence.subtype();
 
-		speak (room, "Tell me more about " + msg.body () + ", " + msg.from ().resource ());
-	}
+    switch (p) {
+        case Presence::Available:
+            cout << "is online.";
+            break;
+
+        case Presence::Chat:
+            cout << "is 'available for chat.'";
+            break;
+
+        case Presence::Away:
+            cout << "went away.";
+            break;
+
+        case Presence::DND:
+            cout << "went DND.";
+            break;
+
+        case Presence::XA:
+            cout << "went XA.";
+            break;
+
+        case Presence::Unavailable:
+            cout << "went offline.";
+            break;
+
+        case Presence::Probe:
+            cout << "== Presence probe ==";
+            break;
+
+        case Presence::Error:
+            cout << "== Presence error ==";
+            break;
+
+        case Presence::Invalid:
+            cout << "== The stanza is invalid ==";
+            break;
+
+        default:
+            cout << "== default presence handling ==";
+            break;
+    }
+
+    cout << std::endl;
 }
 
-bool Channel::handleMUCRoomCreation (MUCRoom* room)
+void Channel::handleMUCMessage(gloox::MUCRoom* room, const gloox::Message& msg, bool priv)
 {
-	// TODO: Stub. What does scenario does this handle and would plugins care?
-	return true;
+    if (msg.from().resource() == bot->nick) {
+        // The bot got a message from itself.
+    }
+    else {
+        // TODO: Log this.
+        std::cout << "[" << room->name() << ": " << msg.from().resource() << "(" << priv << ") ]  " << msg.body() << std::endl;
+        bot->processMessage(this, msg, priv);
+    }
 }
 
-void Channel::handleMUCSubject (MUCRoom* room, const std::string &nick, const std::string &subject)
+bool Channel::handleMUCRoomCreation(gloox::MUCRoom* /*room*/)
 {
-	cout << room->name () << " Subject is \"" << subject << "\"";
-	if (nick.empty ()) {
-		// If no nick is given, then the topic was already set.
-		cout << endl;
-	}
-	else {
-		cout << " set by " << nick << endl;
-	}
+    // TODO: This is a stub. What does scenario does this handle and would plugins care?
+    return true;
 }
 
-void Channel::handleMUCInviteDecline (MUCRoom* room, const JID& invitee, const std::string& reason)
+void Channel::handleMUCSubject(gloox::MUCRoom* room, const std::string& nick, const std::string& subject)
 {
-	// TODO: Stub.
+    std::cout << room->name() << " Subject is \"" << subject << "\"";
+    if (nick.empty()) {
+        // If no nick is given, then the topic was already set (i.e. we just joined the room).
+        std::cout << std::endl;
+    }
+    else {
+        std::cout << " set by " << nick << std::endl;
+    }
 }
 
-void Channel::handleMUCError (MUCRoom* room, StanzaError error)
+void Channel::handleMUCInviteDecline(gloox::MUCRoom* /*room*/, const gloox::JID& /*invitee*/, const std::string& /*reason*/)
 {
-	// TODO: Stub.
-	cout << "[" << room->name () << "] Channel Error: ";
-	switch (error) {
-	case gloox::StanzaErrorBadRequest:
-		cout << "Bad Request.";
-		break;
-	case gloox::StanzaErrorConflict:
-		cout << "Conflict.";
-		break;
-	case gloox::StanzaErrorFeatureNotImplemented:
-		cout << "Feature not implemented.";
-		break;
-	case gloox::StanzaErrorForbidden:
-		cout << "Forbidden. ";
-		break;
-	case gloox::StanzaErrorGone:
-		cout << "Gone.";
-		break;
-	case gloox::StanzaErrorInternalServerError:
-		cout << "Internal server error.";
-		break;
-	case gloox::StanzaErrorItemNotFound:
-		cout << "Item not found.";
-		break;
-	case gloox::StanzaErrorJidMalformed:
-		cout << "JID Malformed.";
-		break;
-	case gloox::StanzaErrorNotAcceptable:
-		cout << "Stanza Not Acceptable.";
-		break;
-	case gloox::StanzaErrorNotAllowed:
-		cout << "Action not Allowed.";
-		break;
-	case gloox::StanzaErrorNotAuthorized:
-		cout << "Action not authorized.";
-		break;
-	case gloox::StanzaErrorNotModified:
-		cout << "Item not modified.";
-		break;
-	case gloox::StanzaErrorPaymentRequired:
-		cout << "Payment required.";
-		break;
-	case gloox::StanzaErrorRecipientUnavailable:
-		cout << "Recipient unavailable.";
-		break;
-	case gloox::StanzaErrorRedirect:
-		cout << "Redirect.";
-		break;
-	case gloox::StanzaErrorRegistrationRequired:
-		cout << "Registration required.";
-		break;
-	case gloox::StanzaErrorRemoteServerNotFound:
-		cout << "Remote server not found";
-		break;
-	case gloox::StanzaErrorRemoteServerTimeout:
-		cout << "Remote Server Timeout";
-		break;
-	case gloox::StanzaErrorResourceConstraint:
-		cout << "Resource constraint";
-		break;
-	case gloox::StanzaErrorServiceUnavailable:
-		cout << "Service unavailable.";
-		break;
-	case gloox::StanzaErrorSubscribtionRequired:
-		cout << "Subscription required.";
-		break;
-	case gloox::StanzaErrorUndefinedCondition:
-		cout << "Undefined condition";
-		break;
-	case gloox::StanzaErrorUnexpectedRequest:
-		cout << "Unexpected request.";
-		break;
-	case gloox::StanzaErrorUnknownSender:
-		cout << "Unknown sender.";
-		break;
-	case gloox::StanzaErrorUndefined:
-		cout << "No stanza error occured";
-		break;
-	default:
-		cout << "default-case.";
-		break;
-	}
-	cout << endl;
+    // TODO: This is a stub. Log that this method was called but nothing was done.
 }
 
-void Channel::handleMUCInfo (MUCRoom* room, int features, const std::string &name, const DataForm *infoForm)
+void Channel::handleMUCError(gloox::MUCRoom* room, gloox::StanzaError error)
 {
-	// TODO: Stub.
-	cout << "[" << room->name () << "] Room info: Features: " << features << " name: " << name << endl;
+    using gloox::StanzaError;
+    using std::cout;
+    // TODO: Log this. Perhaps attempt a reconnect/rejoin.
+    cout << "[" << room->name() << "] Channel Error: ";
+    switch (error) {
+        case StanzaError::StanzaErrorBadRequest:
+            cout << "Bad Request.";
+            break;
+
+        case StanzaError::StanzaErrorConflict:
+            cout << "Conflict.";
+            break;
+
+        case StanzaError::StanzaErrorFeatureNotImplemented:
+            cout << "Feature not implemented.";
+            break;
+
+        case StanzaError::StanzaErrorForbidden:
+            cout << "Forbidden. ";
+            break;
+
+        case StanzaError::StanzaErrorGone:
+            cout << "Gone.";
+            break;
+
+        case StanzaError::StanzaErrorInternalServerError:
+            cout << "Internal server error.";
+            break;
+
+        case StanzaError::StanzaErrorItemNotFound:
+            cout << "Item not found.";
+            break;
+
+        case StanzaError::StanzaErrorJidMalformed:
+            cout << "JID Malformed.";
+            break;
+
+        case StanzaError::StanzaErrorNotAcceptable:
+            cout << "Stanza Not Acceptable.";
+            break;
+
+        case StanzaError::StanzaErrorNotAllowed:
+            cout << "Action not Allowed.";
+            break;
+
+        case StanzaError::StanzaErrorNotAuthorized:
+            cout << "Action not authorized.";
+            break;
+
+        case StanzaError::StanzaErrorNotModified:
+            cout << "Item not modified.";
+            break;
+
+        case StanzaError::StanzaErrorPaymentRequired:
+            cout << "Payment required.";
+            break;
+
+        case StanzaError::StanzaErrorRecipientUnavailable:
+            cout << "Recipient unavailable.";
+            break;
+
+        case StanzaError::StanzaErrorRedirect:
+            cout << "Redirect.";
+            break;
+
+        case StanzaError::StanzaErrorRegistrationRequired:
+            cout << "Registration required.";
+            break;
+
+        case StanzaError::StanzaErrorRemoteServerNotFound:
+            cout << "Remote server not found";
+            break;
+
+        case StanzaError::StanzaErrorRemoteServerTimeout:
+            cout << "Remote Server Timeout";
+            break;
+
+        case StanzaError::StanzaErrorResourceConstraint:
+            cout << "Resource constraint";
+            break;
+
+        case StanzaError::StanzaErrorServiceUnavailable:
+            cout << "Service unavailable.";
+            break;
+
+        case StanzaError::StanzaErrorSubscribtionRequired:
+            cout << "Subscription required.";
+            break;
+
+        case StanzaError::StanzaErrorUndefinedCondition:
+            cout << "Undefined condition";
+            break;
+
+        case StanzaError::StanzaErrorUnexpectedRequest:
+            cout << "Unexpected request.";
+            break;
+
+        case StanzaError::StanzaErrorUnknownSender:
+            cout << "Unknown sender.";
+            break;
+
+        case StanzaError::StanzaErrorUndefined:
+            cout << "No stanza error occured";
+            break;
+
+        default:
+            cout << "default-case.";
+            break;
+    }
+
+    cout << std::endl;
 }
 
-void Channel::handleMUCItems (MUCRoom *room, const Disco::ItemList &items)
+void Channel::handleMUCInfo(gloox::MUCRoom* room, int features, const std::string& name, const gloox::DataForm* /*infoForm*/)
 {
-	// TODO: Stub.
+    // TODO: This is a stub. At least log that this method is being called.
+    std::cout << "[" << room->name() << "] Room info: Features: " << features << " name: " << name << std::endl;
 }
 
-void Channel::speak (MUCRoom * room, const string & message)
+void Channel::handleMUCItems(gloox::MUCRoom* /*room*/, const gloox::Disco::ItemList& /*items*/)
 {
-	lastSpoken = message;
-	room->send (message);
+    // TODO: This is a stub. At least log that this method is being called.
+}
+
+void Channel::speak(const std::string& message)
+{
+    room->send(message);
+}
+
+void Channel::join(gloox::Presence::PresenceType type, const std::string& status, int priority)
+{
+    room->join(type, status, priority);
 }
