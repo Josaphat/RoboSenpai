@@ -24,6 +24,7 @@ class BotCore {
 public:
     BotCore(const std::string& jid, const std::string& nick, const std::string& password);
     virtual ~BotCore();
+
     void connect(YAML::Node* config);
     void processMessage(Channel* src, const gloox::Message& msg, bool priv);
     void addChannel(Channel* channel);
@@ -34,5 +35,9 @@ private:
     Connection* connection;
     std::vector<Channel*> channels;
     std::vector<Module*> modules;
+
+private: // Hide these
+	BotCore (const BotCore&) {}
+	BotCore& operator=(const BotCore&) {}
 };
 
