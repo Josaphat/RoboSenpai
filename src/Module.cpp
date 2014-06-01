@@ -3,6 +3,7 @@
 #include "BotCore.h"
 
 std::map<std::string, Module*> Module::myMap;
+Scraper Module::scraper;
 
 Module::Module(const std::string& name)
 {

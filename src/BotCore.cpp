@@ -43,7 +43,12 @@ void BotCore::processMessage(Channel* src, const gloox::Message& msg, bool /*pri
 
     // Pass the message to all of the modules
     for (Module* m : modules) {
-        m->accept(src, msg);
+        try {
+            m->accept(src, msg);
+        }
+        catch(...) {
+            std::cerr << "Exception occurred while sending message to module." << std::endl;
+        }
     }
 }
 

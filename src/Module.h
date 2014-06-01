@@ -23,6 +23,6 @@ public:
     static std::map<std::string, Module*> myMap;
 
 protected:
-    Scraper scraper;
+    static Scraper scraper;
     BotCore* bot;
 };
