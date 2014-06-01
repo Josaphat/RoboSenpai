@@ -27,11 +27,11 @@ void BotCore::connect(YAML::Node* config)
 {
     connection->setConfig(config);
     // Add all the modules in the config file
-    YAML::Node modules = (*config) ["modules"];
+    YAML::Node modules = (*config)["modules"];
 
     for (YAML::const_iterator it = modules.begin(); it != modules.end(); ++it) {
-        const std::string moduleName = it->as<std::string> ();
-        this->modules.push_back(Module::myMap[moduleName]);
+        const std::string moduleName = it->as<std::string>();
+        this->modules.push_back(Module::moduleMap[moduleName]);
     }
 
     connection->connect();
