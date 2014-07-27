@@ -44,6 +44,5 @@ protected:
     /// A convenience object which provides the functionality to request a URL
     /// and get back XHTML for subclasses.
     static Scraper scraper;
-
     BotCore* bot;
 };

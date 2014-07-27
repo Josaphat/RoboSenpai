@@ -28,8 +28,10 @@ pugi::xml_document* Scraper::loadUrl(const std::string& url)
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writeCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
+    // Some services don't reply if you don't give them a User Agent.
+    // Give what the curl commandline util gives
     curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl/7.37.0-RoboSenpai");
-    //    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // Logging
+//    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // Logging
 
     // Tell curl to do its thing and grab the stuff at the url we gave it
     curl_easy_perform(curl);
@@ -37,8 +39,8 @@ pugi::xml_document* Scraper::loadUrl(const std::string& url)
     // The data is now stored in this->data
     // Turn it into valid XML
     TidyDoc tdoc = tidyCreate();
-    TidyBuffer output = {0};
-    TidyBuffer errbuf = {0};
+    TidyBuffer output;
+    TidyBuffer errbuf;
     int rc = -1;
     Bool ok = tidyOptSetBool(tdoc, TidyXhtmlOut, yes);
 
@@ -80,9 +82,11 @@ pugi::xml_document* Scraper::loadFeedUrl(const std::string& url)
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writeCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
+    // Some services don't reply if you don't give them a User Agent.
+    // Give what the curl commandline utility gives
     curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl/7.37.0-RoboSenpai");
-    // curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // logging
-    
+//    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+
     curl_easy_perform(curl);
     pugi::xml_document* doc = new pugi::xml_document;
     auto result = doc->load(data.c_str());
@@ -104,3 +108,4 @@ std::size_t writeCallback(char* buf, std::size_t size, std::size_t nmemb, void* 
     }
     return size * nmemb; // tell curl how many bytes we handled
 }
+

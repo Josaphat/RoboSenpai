@@ -46,8 +46,8 @@ void BotCore::processMessage(Channel* src, const gloox::Message& msg, bool /*pri
         try {
             m->accept(src, msg);
         }
-        catch (...) {
-            std::cout << "Plugin exception error." << std::endl;
+        catch(...) {
+            std::cerr << "Exception occurred while sending message to module." << std::endl;
         }
     }
 }
@@ -56,3 +56,4 @@ void BotCore::addChannel(Channel* channel)
 {
     channels.push_back(channel);
 }
+

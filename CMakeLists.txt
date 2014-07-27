@@ -18,7 +18,7 @@ IF(MSVC)
 	# Add the ldap library because cURL is a PITA
 	SET( LIBS ${LIBS} wldap32.lib )
 ELSE()
-	SET(CMAKE_CXX_FLAGS "-Wall -pedantic -std=c++11")
+	SET(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -std=c++11")
 ENDIF()
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.yml ${CMAKE_CURRENT_BINARY_DIR}/config.yml COPYONLY)
