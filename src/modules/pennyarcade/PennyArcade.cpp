@@ -36,7 +36,7 @@ void PennyArcade::commandAction(Channel* src, const std::vector<std::string>& ar
     }
 
     if (response != 0) {
-        pugi::xml_document * doc = scraper.loadUrl(PA_URL);
+        pugi::xml_document * doc = Module::scraper.loadUrl(PA_URL);
         if (doc == nullptr) {
             // TODO: Implement proper logging here.
             std::cout << "Error retrieving URL: " << PA_URL << std::endl;
@@ -49,7 +49,7 @@ void PennyArcade::commandAction(Channel* src, const std::vector<std::string>& ar
         if (response == 2) {
             std::string random_url = doc->select_single_node("//*[@id='comic']/div[2]/ul[1]/li[3]/a").node().attribute("href").value();
             delete doc;
-            doc = scraper.loadUrl(random_url);
+            doc = Module::scraper.loadUrl(random_url);
         }
         pugi::xpath_node paImage = doc->select_single_node("//*[@id='comicFrame']/a/img");
         std::string title = paImage.node().attribute("alt").value();

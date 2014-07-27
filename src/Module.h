@@ -43,7 +43,7 @@ public:
 protected:
     /// A convenience object which provides the functionality to request a URL
     /// and get back XHTML for subclasses.
-    Scraper scraper;
+    static Scraper scraper;
 
     BotCore* bot;
 };
